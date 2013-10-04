@@ -1,0 +1,24 @@
+# 10.3 - Array Sorting
+puts ("Dictionary Sorting Array Example")
+
+def sort some_array
+
+  sorted_array = dictionary_sort some_array, []
+  puts sorted_array
+end
+
+def dictionary_sort unsorted_array, sorted_array
+    downcase_array = unsorted_array.map(&:downcase)
+    sorted_array << downcase_array.min
+    unsorted_array.delete_at downcase_array.index(downcase_array.min)
+    if !unsorted_array.empty?
+      dictionary_sort unsorted_array, sorted_array
+    end
+    return sorted_array
+end
+
+array_to_sort = ["dog", "cat", "mean", "cat", "Cat", "Chap", "Mouse", "apple", "house", "zoo", "frog", "100", "Cow", "Lips", "-100"]
+puts ("Solution using sort: ")
+puts array_to_sort.sort
+puts ("Solution using recursive sort: ")
+sort array_to_sort
