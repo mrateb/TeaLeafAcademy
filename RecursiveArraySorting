@@ -1,0 +1,29 @@
+# 10.2 - Array Sorting
+puts ("Sorting Array Example")
+class Array
+	def swap!(a,b)
+		self[a], self[b] = self[b], self[a]
+		self
+	end
+end
+
+def sort some_array
+	recursive_sort some_array, [], 0, some_array.length-1
+end
+
+def recursive_sort unsorted_array, sorted_array, location, length
+		if location < length
+			if unsorted_array[location] > unsorted_array[location + 1]
+				unsorted_array.swap!(location, location+1)
+				sorted_array = unsorted_array
+				location += 1
+				recursive_sort unsorted_array, sorted_array, location, length
+			end
+		end
+		puts sorted_array
+end
+
+array_to_sort = ["dog", "cat", "mean", "cat", "Cat", "Chap", "Mouse", "apple", "house", "zoo", "frog", "100", "Cow", "Lips", "-100"]
+sort array_to_sort
+puts ("Solution using sort: ")
+puts array_to_sort.sort
