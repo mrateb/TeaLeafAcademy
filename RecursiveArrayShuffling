@@ -1,0 +1,28 @@
+# 10.3 - Array Shuffling
+puts ("Shuffling Array Example")
+
+def shuffle some_array
+  shuffled_array = recursive_shuffle some_array, []
+  puts shuffled_array
+end
+
+def recursive_shuffle unshuffled_array, shuffled_array
+    element = unshuffled_array.sample
+    shuffled_array << element
+    unshuffled_array.delete_at unshuffled_array.index(element)
+    if !unshuffled_array.empty?
+      recursive_shuffle unshuffled_array, shuffled_array
+    end
+    return shuffled_array
+end
+
+array_to_shuffle = ["dog", "cat", "mean", "cat", "Cat", "Chap", "Mouse", "apple", "house", "zoo", "frog", "100", "Cow", "Lips", "-100"]
+puts ("Solution using shuffle: ")
+puts array_to_shuffle.shuffle
+puts ("Solution using recursive shuffle: ")
+shuffle array_to_shuffle
+cards_to_shuffle = ["1","2","3","4","5","6","7","8","9","10","10","10","10","10"]
+puts ("Shuffling kinda deck of cards using built in shuffle:")
+puts cards_to_shuffle.shuffle
+puts ("Shuffling kinda deck of cards using recursive shuffle:")
+shuffle cards_to_shuffle
