@@ -1,0 +1,78 @@
+# Chapter 12
+
+# 1 Billion Seconds
+puts Time.mktime(1980,1,13) + 1000000000
+
+# Spanks for age
+puts "What year were you born in?"
+yr = gets.chomp
+puts "What month were you born in?"
+mnth = gets.chomp
+puts "What day were you born in?"
+dy = gets.chomp
+
+exact_age = Time.new - Time.mktime(yr, mnth, dy)
+int_age = (exact_age / (60*60*24*7*52)).to_i
+puts "you are #{int_age} years old so you get..."
+int_age.times do puts "SPANK" end
+
+# Birthdays from a file
+# Changed format of input file so just contains - between values
+# YAML
+require 'YAML'
+
+def yaml_save object, filename
+  File.open filename, 'w' do |f|
+    f.write(object.to_yaml)
+  end
+end
+
+def yaml_load filename
+  yaml_string = File.read filename
+  YAML::load yaml_string
+end
+
+name_of_person = Array.new 
+bday = Array.new
+file_hash = Hash.new
+
+filename = 'birthdays.txt'
+read_array = yaml_load filename
+split_array = read_array.split('-')
+split_array.each do |x|
+  if x =~ /\d/
+    bday << x
+  else
+    name_of_person << x
+  end
+end
+
+file_hash = Hash[name_of_person.zip(bday)]
+
+puts "Please enter the name of the person whose birthday you want to know about"
+find_person = gets.chomp
+if file_hash["#{find_person}"] == nil
+  puts "Sorry, that individual is not in the database. Goodbye"
+  exit
+end
+bday_hash = file_hash["#{find_person}"]
+bday_year = file_hash["#{find_person}"][-4,4]
+bday_month = file_hash["#{find_person}"][0,3]
+bday_day = file_hash["#{find_person}"][4,2]
+t = Time.now
+time_bday = Time.mktime(bday_year.to_i, bday_month, bday_day.to_i)
+time_next_bday = Time.mktime(t.year, bday_month, bday_day.to_i)
+
+if file_hash.has_key? find_person
+  puts "#{find_person}'s birthday is #{bday_hash}"
+  if time_bday > t
+    puts "Their birthday will be on #{bday_month}, #{bday_day} of #{t.year}"
+  else
+    time_next_bday = Time.mktime(t.year+1, bday_month, bday_day.to_i)
+    puts "You missed their birthday this year :( their next birthday will be on #{bday_month}, #{bday_day} of #{time_next_bday.year}"
+  end
+  puts "Their birthday will be in #{((time_next_bday - t)/(60*60*24)).to_i} days"
+  puts "At that time they will be #{((t - time_bday)/(60*60*24*7*52)).to_i} years old"
+  exit
+end
+
