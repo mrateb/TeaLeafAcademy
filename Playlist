@@ -1,0 +1,32 @@
+#YAML
+require 'YAML'
+
+def yaml_save object, filename
+  File.open filename, 'w' do |f|
+    f.write(object.to_yaml)
+  end
+end
+
+def yaml_load filename
+  yaml_string = File.read filename
+
+  YAML::load yaml_string
+end
+
+#playlist
+song_names = Dir['**/*.mp3']
+song_names.shuffle!
+filename = 'playlist.m3u'
+
+if File.exists?(filename)
+  puts "#{filename} already exists - do you want to overwrite? (y/n)"  
+  overwrite_file = gets.chomp
+  if overwrite_file == 'y'
+    yaml_save song_names, filename
+  elsif overwrite_file == 'n'
+    puts "Thank you, exiting"
+    exit
+  else
+    puts "Invalid entry"
+  end
+end
