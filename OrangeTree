@@ -1,0 +1,91 @@
+# Chapter 13
+# Orange tree class
+# Orange trees grow up to 25 feet
+# They live up to 50 years
+# They take 5 years to produce fruit
+# Orange trees produce up to 5000 oranges per year
+
+class OrangeTree
+  def initialize
+    @height = 2 + rand(3)
+    @age = 0
+    @oranges = 0
+
+    puts "You planted an orange tree - the tree is about #{@height}ft tall"
+  end
+
+  def height
+    @height
+  end
+
+  def age
+    @age
+  end
+
+  def one_year_passes
+    @height = @height + rand(3)
+    @age += 1
+    if @age > 5
+      @oranges += (@age*1.1**@age).to_i
+      puts "There are #{@oranges} oranges on the tree"
+    end 
+    if @age > 50 # + rand(15) <-- can randomize when it dies
+        die
+    end
+    @oranges = 0
+  end
+
+  def count_oranges
+    puts "There are currently #{@oranges} oranges on the tree"
+  end
+
+  def pick_oranges
+    if @age > 5
+      @oranges += (@age*1.1**@age).to_i
+    end 
+    puts "How many oranges would you like to pick?"
+    picked = gets.chomp
+    if picked.to_i > @oranges
+      puts "Sorry, there aren't that many oranges on the tree"
+    else
+      @oranges = @oranges - picked.to_i
+      puts "That was delicious"
+      puts "There are #{@oranges} oranges left this year"
+    end
+  end
+
+  def stats
+    puts "Height: #{@height}"
+    puts "Age: #{@age}"
+    puts "Oranges: #{@oranges}"
+  end
+
+  private
+
+  def die
+    puts "After #{age} glorious years, your tree has died"
+    exit
+  end
+end
+
+oj_tree = OrangeTree.new
+puts oj_tree.height
+puts oj_tree.age
+puts oj_tree.count_oranges
+oj_tree.one_year_passes
+oj_tree.pick_oranges
+counter = 0
+begin
+  oj_tree.one_year_passes
+  counter += 1
+end until counter == 10
+oj_tree.stats
+oj_tree.pick_oranges
+begin
+  oj_tree.one_year_passes
+  counter += 1
+end until counter == 48
+oj_tree.stats
+oj_tree.one_year_passes
+oj_tree.one_year_passes
+oj_tree.one_year_passes
