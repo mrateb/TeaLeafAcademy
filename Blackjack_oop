@@ -1,0 +1,176 @@
+# Interactive command line blackjack game with classes implemented
+
+class Deck
+  @@no_of_decks = 0
+
+  def initialize    
+  # Thinking of adding some functionality here to allow for multiple decks to prevent card counting?
+      @suits = ['H', 'D', 'S', 'C']
+      @cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']  
+      @deck = @suits.product(@cards)
+      @@no_of_decks += 1
+  end
+
+  def shuffle
+    # Shuffling 5 times, assuming it will randomize more, 5 is arbitrary - may include a test later
+    # Assuming if I have multiple decks it will be more worthwhile and may include some feature to shuffle more based on how many decks there are
+    5.times {@deck.shuffle!}
+  end
+
+  def pop
+    @deck.pop(1)
+  end
+end
+
+class Hand
+  def initialize
+    @cards_in_hand = []
+  end
+
+  def << (card)
+    @cards_in_hand << card
+    #puts "Cards in hand: #{@cards_in_hand}" 
+  end
+
+  def [](ind)
+    @cards_in_hand[-ind]
+  end
+
+  def calculate_total
+  # [['H', '3'], ['S', 'Q'], ... ]
+  arr = []
+
+  arr = @cards_in_hand.map{|e| e[0]}
+
+  @total = 0
+  arr.each do |value|
+    
+    if value[1] == "A"
+      @total += 11
+     
+    elsif value[1] == "J" || value[1] == "Q" || value[1] == "K" # J, Q, K
+      @total += 10
+    
+    else
+      @total += value[1].to_i
+     
+    end
+  end
+  #correct for Aces
+  arr.select{|e| e == "A"}.count.times do
+    @total -= 10 if @total > 21
+  end
+  @total
+end
+end
+
+
+# Start Game
+
+puts "Welcome to Blackjack!"
+#initialize cards
+deck = Deck.new()
+deck.shuffle
+
+# Deal Cards
+
+mycards = Hand.new()
+dealercards = Hand.new()
+
+mycards << deck.pop
+dealercards << deck.pop
+mycards << deck.pop
+dealercards << deck.pop
+
+dealertotal = dealercards.calculate_total
+mytotal = mycards.calculate_total
+
+# Show Cards
+
+puts "Dealer has: #{dealercards[0]} and #{dealercards[1]}, for a total of #{dealertotal}"
+puts "You have: #{mycards[0]} and #{mycards[1]}, for a total of: #{mytotal}"
+puts ""
+
+# Player turn
+if mytotal == 21
+  puts "Congratulations, you hit blackjack! You win!"
+  exit
+end
+
+while mytotal < 21
+  puts "What would you like to do? 1) hit 2) stay"
+  hit_or_stay = gets.chomp
+
+  if !['1', '2'].include?(hit_or_stay)
+    puts "Error: you must enter 1 or 2"
+    next
+  end
+
+  if hit_or_stay == "2"
+    puts "You chose to stay."
+    break
+  end
+
+  #hit
+  new_card = deck.pop
+  puts "Dealing card to player: #{new_card}"
+  mycards << new_card
+  mytotal = mycards.calculate_total
+  puts "Your total is now: #{mytotal}"
+
+  if mytotal == 21
+    puts "Congratulations, you hit blackjack! You win!"
+    exit
+  elsif mytotal > 21
+    puts "Sorry, it looks like you busted!"
+    exit
+  end
+end
+
+# Dealer turn
+
+if dealertotal == 21
+  puts "Sorry, dealer hit blackjack. You lose."
+  exit
+end
+
+while dealertotal < 17
+  #hit
+  new_card = deck.pop
+  puts "Dealing new card for dealer: #{new_card}"
+  dealercards << new_card
+  dealertotal = dealercards.calculate_total
+  puts "Dealer total is now: #{dealertotal}"
+
+  if dealertotal == 21
+    puts "Sorry, dealer hit blackjack. You lose."
+    exit
+  elsif dealertotal > 21
+    puts "Congratulations, dealer busted! You win!"
+    exit
+  end
+end
+
+# Compare hands
+
+puts "Dealer's cards: "
+dealercards.each do |card|
+  puts "=> #{card}"
+end
+puts ""
+
+puts "Your cards:"
+mycards.each do |card|
+  puts "=> #{card}"
+end
+puts ""
+
+if dealertotal > mytotal
+  puts "Sorry, dealer wins."
+elsif dealertotal < mytotal
+  puts "Congratulations, you win!"
+else
+  puts "It's a tie!"
+end
+
+exit
